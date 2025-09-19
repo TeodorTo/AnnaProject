@@ -1,0 +1,18 @@
+﻿@model Infrastructure.Entities.Product
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h2>Delete Product</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+
+<div>
+    <strong>@Model.Name</strong> - @Model.Price.ToString("C")
+</div>
+
+<form asp-action="DeleteProductConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Products" class="btn btn-secondary">Cancel</a>
+</form>
