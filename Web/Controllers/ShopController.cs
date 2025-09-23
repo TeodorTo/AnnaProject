@@ -13,6 +13,7 @@ public class ShopController : Controller
         _context = context;
     }
 
+    
     // Показва всички категории
     public async Task<IActionResult> Index()
     {
