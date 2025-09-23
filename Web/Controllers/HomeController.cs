@@ -2,8 +2,9 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Models;
-using Infrastructure; // <-- add this
-using Infrastructure.Entities; // <-- add this
+using Infrastructure;
+using  Web.ViewModel;
+using Infrastructure.Entities;
 
 namespace Web.Controllers;
 
@@ -18,11 +19,33 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index(Guid? categoryId)
     {
-        var products = await _context.Products.ToListAsync();
-        return View(products);
+        // Start with all products
+        var productsQuery = _context.Products
+            .Include(p => p.ProductCategories)
+            .ThenInclude(pc => pc.Category)
+            .AsQueryable();
+        
+        if (categoryId.HasValue)
+        {
+            productsQuery = productsQuery
+                .Where(p => p.ProductCategories
+                    .Any(pc => pc.CategoryId == categoryId.Value));
+        }
+        
+        var categories = _context.Categories.ToList();
+        
+        var vm = new ProductsViewModel
+        {
+            Products = productsQuery.ToList(),
+            Categories = categories,
+            SelectedCategoryId = categoryId
+        };
+
+        return View(vm);
     }
+
 
     public IActionResult Privacy()
     {

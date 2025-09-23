@@ -45,7 +45,7 @@ public class CartController : Controller
         _cartService.RemoveFromCart(productId);
         return RedirectToAction("Index");
     }
-
+    
     [HttpPost]
     public async Task<IActionResult> Checkout(string shippingCity, string shippingStreet, string? shippingZip)
     {
