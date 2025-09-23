@@ -4,11 +4,13 @@ using Infrastructure;
 using Infrastructure.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Web.ViewModel;
 
 namespace Web.Controllers
 {
-    // [Area("Admin")]
+  
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
@@ -19,33 +21,60 @@ namespace Web.Controllers
             _context = context;
         }
 
-        // ------------------ DASHBOARD ------------------
+       
         public IActionResult Index()
         {
             return View();
         }
 
-        // ------------------ PRODUCTS ------------------
+      
         public async Task<IActionResult> Products()
         {
             var products = await _context.Products.ToListAsync();
             return View(products);
         }
 
-        public IActionResult CreateProduct() => View();
+        public IActionResult CreateProduct()
+        {
+            ViewData["Categories"] = new MultiSelectList(_context.Categories, "Id", "Name");
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateProduct(Product product)
+        public async Task<IActionResult> CreateProduct(ProductCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var product = new Product
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    Price = model.Price,
+                    ImageUrl = model.ImageUrl,
+                    IsActive = model.IsActive,
+                    CreatedAtUtc = DateTime.UtcNow
+                };
+
+                // Добавяме избраните категории
+                foreach (var catId in model.SelectedCategoryIds)
+                {
+                    product.ProductCategories.Add(new ProductCategory
+                    {
+                        Product = product,
+                        CategoryId = catId
+                    });
+                }
+
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Products));
             }
-            return View(product);
+
+            ViewData["Categories"] = new MultiSelectList(_context.Categories, "Id", "Name", model.SelectedCategoryIds);
+            return View(model);
         }
+
 
         public async Task<IActionResult> EditProduct(Guid id)
         {
@@ -87,7 +116,7 @@ namespace Web.Controllers
             return RedirectToAction(nameof(Products));
         }
 
-        // ------------------ CATEGORIES ------------------
+       
         public async Task<IActionResult> Categories()
         {
             var categories = await _context.Categories.ToListAsync();

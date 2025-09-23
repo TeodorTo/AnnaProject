@@ -21,7 +21,7 @@ public class HomeController : Controller
 
     public IActionResult Index(Guid? categoryId)
     {
-        // Start with all products
+     
         var productsQuery = _context.Products
             .Include(p => p.ProductCategories)
             .ThenInclude(pc => pc.Category)
@@ -45,12 +45,7 @@ public class HomeController : Controller
 
         return View(vm);
     }
-
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

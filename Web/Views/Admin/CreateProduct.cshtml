@@ -1,4 +1,4 @@
-﻿@model Infrastructure.Entities.Product
+﻿@model Web.ViewModel.ProductCreateViewModel
 @{
     ViewData["Title"] = "Create Product";
 }
@@ -10,23 +10,31 @@
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
     </div>
+
     <div class="form-group">
         <label asp-for="Price"></label>
-        <input type="number" asp-for="Price" class="form-control" />
+        <input asp-for="Price" class="form-control" type="number" step="0.01" />
     </div>
+
     <div class="form-group">
         <label asp-for="Description"></label>
         <textarea asp-for="Description" class="form-control"></textarea>
     </div>
+
     <div class="form-group">
         <label asp-for="ImageUrl"></label>
         <input asp-for="ImageUrl" class="form-control" />
     </div>
+
     <div class="form-check">
         <input asp-for="IsActive" class="form-check-input" />
         <label asp-for="IsActive" class="form-check-label"></label>
     </div>
-    
+
+    <div class="form-group">
+        <label>Categories</label>
+        <select asp-for="SelectedCategoryIds" asp-items="@(ViewData["Categories"] as MultiSelectList)" multiple class="form-control"></select>
+    </div>
 
     <button type="submit" class="btn btn-success">Save</button>
     <a asp-action="Products" class="btn btn-secondary">Cancel</a>
