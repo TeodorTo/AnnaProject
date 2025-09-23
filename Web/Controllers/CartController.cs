@@ -2,8 +2,9 @@
 using Infrastructure.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Web.Sevices;
+
+namespace Web.Controllers;
 
 public class CartController : Controller
 {

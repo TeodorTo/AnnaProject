@@ -26,4 +26,10 @@
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Shop\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shop\ProductDetails.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shop\Products.cshtml" />
+    </ItemGroup>
+
 </Project>
