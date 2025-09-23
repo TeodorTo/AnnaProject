@@ -15,10 +15,21 @@
 <body>
 <h2>Products</h2>
 
-<div class="category-dropdown">
+<div class="category-container">
+    <a asp-action="Index" asp-route-categoryId=""> All</a>
     @foreach (var category in Model.Categories)
     {
-        <button> @category.Name </button>
+        <a asp-action="Index" asp-route-categoryId="@category.Id">
+            <p>@category.Name</p>
+            <div>
+                @if (!string.IsNullOrEmpty(category.ImageUrl))
+                {
+                    <div class="category">
+                        <img src="@category.ImageUrl" alt="no image"
+                             style="max-width: 150px; max-height: 150px; object-fit: cover;"/></div>
+                }
+            </div>
+        </a>
     }
 </div>
 
@@ -28,8 +39,7 @@
         <div class="product-item">
             @if (!string.IsNullOrEmpty(item.ImageUrl))
             {
-                <img src="@item.ImageUrl" alt="@item.Name"
-                     style="max-width: 80px; max-height: 80px; object-fit: cover;"/>
+                <img src="@item.ImageUrl" alt="@item.Name"/>
             }
             else
             {
@@ -37,7 +47,7 @@
             }
 
             <p>@item.Name</p>
-            
+
             <p>@item.Price.ToString("C")</p>
 
             @if (item.IsActive)
