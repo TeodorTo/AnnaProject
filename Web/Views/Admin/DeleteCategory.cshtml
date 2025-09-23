@@ -11,7 +11,7 @@
     <strong>@Model.Name</strong> - @Model.Slug
 </div>
 
-<form asp-action="DeleteCategoryConfirmed" method="post">
+<form asp-action="DeleteCategory" method="post">
     <input type="hidden" asp-for="Id" />
     <button type="submit" class="btn btn-danger">Delete</button>
     <a asp-action="Categories" class="btn btn-secondary">Cancel</a>
