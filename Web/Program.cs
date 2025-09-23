@@ -17,11 +17,16 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddSession();
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-
+app.UseSession();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
