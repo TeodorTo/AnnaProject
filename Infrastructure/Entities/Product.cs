@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Infrastructure.Entities;
 
 public class Product
 {
