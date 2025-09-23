@@ -22,9 +22,11 @@
                 }
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                    <a class="btn btn-warning" asp-controller="Cart" asp-action="Index">
-                        Cart (<vc:cart-count />)
+                    <a class="btn btn-warning position-relative" asp-controller="Cart" asp-action="Index">
+                        Cart <span class="badge bg-dark ms-1" id="cart-count">@await Component.InvokeAsync("CartCount")</span>
                     </a>
+
+
                 }
                 
             </div>
@@ -44,5 +46,25 @@
 
 
 @await RenderSectionAsync("Scripts", required: false)
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("form[action$='Cart/Add']").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById("cart-count").innerText = data.count;
+                    });
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

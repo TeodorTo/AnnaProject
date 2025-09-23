@@ -1,86 +1,26 @@
-﻿@using Web.ViewModel
-@model ProductsViewModel
+﻿@model IEnumerable<Infrastructure.Entities.Category>
 
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Products";
+    ViewData["Title"] = "Categories";
 }
 
-<head>
-    <meta charset="utf-8"/>
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/products.css"/>
+<div class="container mt-4">
+    <h2 class="mb-4">Категории</h2>
 
-</head>
-<body>
-
-<h2>Products</h2>
-<div class="page-container">
-    <div class="categories-container">
-    <div class="category-item">
-        <img src="https://techgdpr.com/wp-content/uploads/2025/06/cancel-47588_1280-1024x857.png"/>
-        <a asp-action="Index" asp-route-categoryId=""> All</a>
+    <div class="row">
+        @foreach (var category in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <a asp-action="Products" asp-route-categoryId="@category.Id">
+                    <div class="card h-100 shadow-sm text-center">
+                        <img src="@category.ImageUrl" class="card-img-top" alt="@category.Name" />
+                        <div class="card-body">
+                            <h5 class="card-title">@category.Name</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
     </div>
-    @foreach (var category in Model.Categories)
-    {
-        <a asp-action="Index" asp-route-categoryId="@category.Id">
-
-            <div class="category-item">
-                @if (!string.IsNullOrEmpty(category.ImageUrl))
-                {
-                    <div class="category">
-                        <img src="@category.ImageUrl" alt="no image"/></div>
-                }
-                <p>@category.Name</p>
-            </div>
-        </a>
-    }
 </div>
-
-<div class="products-container">
-    @foreach (var item in Model.Products)
-    {
-        <div class="product-body">
-            <div class="product-item">
-                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                {
-                    <img src="@item.ImageUrl" alt="@item.Name"/>
-                }
-                else
-                {
-                    <span class="text-muted">No image</span>
-                }
-
-                <p>@item.Name</p>
-
-                <p>@item.Price.ToString("C")</p>
-
-                @if (item.IsActive)
-                {
-                    <span class="badge bg-success">Active</span>
-                }
-                else
-                {
-                    <span class="badge bg-secondary">Inactive</span>
-                }
-                @if (User.Identity != null && User.Identity.IsAuthenticated && item.IsActive)
-                {
-                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                        <input type="hidden" name="productId" value="@item.Id"/>
-                        <input type="hidden" name="productName" value="@item.Name"/>
-                        <input type="hidden" name="price" value="@item.Price"/>
-                        <input type="hidden" name="quantity" value="1"/>
-                        <button type="submit" class="btn btn-primary btn-sm">Add</button>
-                    </form>
-                }
-            </div>
-        </div>
-    }
-</div>
-
-</div>
-
-</body>
-
-
-

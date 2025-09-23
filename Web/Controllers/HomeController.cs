@@ -1,54 +1,46 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure;
-using  Web.ViewModel;
+using Web.ViewModel;
 using Infrastructure.Entities;
 
-namespace Web.Controllers;
-
-public class HomeController : Controller
+namespace Web.Controllers
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly ApplicationDbContext _context;
-
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+    public class HomeController : Controller
     {
-        _logger = logger;
-        _context = context;
-    }
+        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-    public IActionResult Index(Guid? categoryId)
-    {
-     
-        var productsQuery = _context.Products
-            .Include(p => p.ProductCategories)
-            .ThenInclude(pc => pc.Category)
-            .AsQueryable();
-        
-        if (categoryId.HasValue)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
-            productsQuery = productsQuery
-                .Where(p => p.ProductCategories
-                    .Any(pc => pc.CategoryId == categoryId.Value));
+            _logger = logger;
+            _context = context;
         }
-        
-        var categories = _context.Categories.ToList();
-        
-        var vm = new ProductsViewModel
+
+       
+        public IActionResult Index()
         {
-            Products = productsQuery.ToList(),
-            Categories = categories,
-            SelectedCategoryId = categoryId
-        };
+            var categories = _context.Categories.ToList();
+            return View(categories);
+        }
 
-        return View(vm);
-    }
-    
+       
+        public IActionResult Products(Guid categoryId)
+        {
+            var category = _context.Categories
+                .Include(c => c.ProductCategories)
+                .ThenInclude(pc => pc.Product)
+                .FirstOrDefault(c => c.Id == categoryId);
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View();
+            if (category == null) return NotFound();
+
+            return View(category);
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }

@@ -19,7 +19,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddSession();
 
 
@@ -58,17 +58,16 @@ async Task CreateAdminAsync(WebApplication app)
     using var scope = app.Services.CreateScope();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    // 1. Ensure the "Admin" role exists
+    
     const string adminRole = "Admin";
     if (!await roleManager.RoleExistsAsync(adminRole))
     {
         await roleManager.CreateAsync(new IdentityRole(adminRole));
     }
 
-    // 2. Check if the admin user exists
+   
     string adminEmail = "admin@a";
-    string adminPassword = "Test123!"; // <-- change to a secure password
+    string adminPassword = "Test123!"; 
 
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
     if (adminUser == null)

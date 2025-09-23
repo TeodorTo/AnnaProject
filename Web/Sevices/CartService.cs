@@ -39,9 +39,19 @@ public class CartService : ICartService
     public List<OrderItem> GetCartItems()
     {
         var session = _httpContextAccessor.HttpContext?.Session;
-        var json = session?.GetString(SessionKey);
-        return json == null ? new List<OrderItem>() : JsonSerializer.Deserialize<List<OrderItem>>(json)!;
+        if (session == null) return new List<OrderItem>();
+
+        var json = session.GetString(SessionKey);
+        if (string.IsNullOrEmpty(json))
+        {
+            var emptyList = new List<OrderItem>();
+            session.SetString(SessionKey, JsonSerializer.Serialize(emptyList));
+            return emptyList;
+        }
+
+        return JsonSerializer.Deserialize<List<OrderItem>>(json)!;
     }
+
 
     public void ClearCart()
     {

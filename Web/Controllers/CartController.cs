@@ -27,6 +27,7 @@ public class CartController : Controller
     }
 
     [HttpPost]
+    [HttpPost]
     public IActionResult Add(Guid productId, string productName, decimal price, int quantity = 1)
     {
         var item = new OrderItem
@@ -37,8 +38,12 @@ public class CartController : Controller
             Quantity = quantity
         };
         _cartService.AddToCart(item);
-        return NoContent();
+
+        
+        var count = _cartService.GetCartItems().Sum(x => x.Quantity);
+        return Json(new { count });
     }
+
 
     [HttpPost]
     public IActionResult Remove(Guid productId)

@@ -1,0 +1,59 @@
+﻿@model Infrastructure.Entities.Category
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Products in " + Model.Name;
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="btn btn-secondary mb-3">⬅ Назад към категориите</a>
+
+    <h2 class="mb-4">Продукти в категория: @Model.Name</h2>
+
+    <div class="row">
+        @foreach (var pc in Model.ProductCategories)
+        {
+            var product = pc.Product;
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" />
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                             style="height:180px">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    }
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">@product.Price.ToString("C")</p>
+
+                        @if (product.IsActive)
+                        {
+                            <span class="badge bg-success mb-2">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary mb-2">Inactive</span>
+                        }
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && product.IsActive)
+                        {
+                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <input type="hidden" name="productName" value="@product.Name" />
+                                <input type="hidden" name="price" value="@product.Price" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
