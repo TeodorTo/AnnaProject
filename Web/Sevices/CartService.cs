@@ -1,14 +1,8 @@
 ﻿using Infrastructure.Entities;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
+using Web.Sevices;
 
-public interface ICartService
-{
-    void AddToCart(OrderItem item);
-    void RemoveFromCart(Guid productId);
-    List<OrderItem> GetCartItems();
-    void ClearCart();
-}
 
 public class CartService : ICartService
 {

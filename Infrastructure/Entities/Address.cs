@@ -6,8 +6,6 @@ public class Address
     
     public string CustomerId    { get; set; } = null!;
     
-    public Customer Customer    { get; set; } = null!;
-    
     public string City          { get; set; } = null!;
     
     public string Street        { get; set; } = null!;

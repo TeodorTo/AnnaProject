@@ -9,6 +9,4 @@ public class ApplicationUser : IdentityUser
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     public bool IsActive         { get; set; } = true;
-
-    public Customer? Customer    { get; set; }
 }

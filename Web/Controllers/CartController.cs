@@ -3,6 +3,7 @@ using Infrastructure.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Web.Sevices;
 
 public class CartController : Controller
 {
@@ -54,7 +55,7 @@ public class CartController : Controller
 
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
-            return Challenge(); // ask user to log in
+            return NotFound(); 
 
         var order = new Order
         {
