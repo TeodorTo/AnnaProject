@@ -1,36 +1,21 @@
-﻿
-@model IEnumerable<Infrastructure.Entities.Category>
-
-
+﻿@model IEnumerable<Infrastructure.Entities.Category>
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Categories";
 }
-<head>
-    <meta charset="utf-8"/>
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/categories.css"/>
 
-</head>
-<body>
-    <h2 class="mb-4">Категории</h2>
-
-<div class="categories-container">
+<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
     @foreach (var category in Model)
     {
-        <a asp-action="Products" asp-route-categoryId="@category.Id">
-            <div class="category-item">
-                @if (!string.IsNullOrEmpty(category.ImageUrl))
-                {
-                        
-                    <div class="category">
-                        <img src="@category.ImageUrl" alt="no image"/>
-                        </div>
-                }
-                <p>@category.Name</p>
+        <div class="col mb-5">
+            <div class="card h-100 shadow-sm">
+                <a asp-action="Products" asp-route-categoryId="@category.Id" class="text-decoration-none text-dark">
+                    <img src="@category.ImageUrl" class="card-img-top" alt="@category.Name" />
+                    <div class="card-body p-4 text-center">
+                        <h5 class="fw-bolder">@category.Name</h5>
+                    </div>
+                </a>
             </div>
-        </a>
+        </div>
     }
 </div>
-
-</body>

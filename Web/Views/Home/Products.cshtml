@@ -1,60 +1,56 @@
 ﻿@model Infrastructure.Entities.Category
-
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Products in " + Model.Name;
 }
-<head>
-    <meta charset="utf-8"/>
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/css/products.css"/>
 
-</head>
-<body>
-<a asp-action="Index" class="btn btn-secondary mb-3">⬅ Назад към категориите</a>
-<h2 class="mb-4">Продукти в категория: @Model.Name</h2>
+<a asp-action="Index" class="btn btn-secondary mb-3">⬅ Back to Categories</a>
 
-<div class="products-container">
+<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
     @foreach (var pc in Model.ProductCategories)
     {
         var product = pc.Product;
-        <div class="product-item">
-            @if (!string.IsNullOrEmpty(product.ImageUrl))
-            {
-                <img src="@product.ImageUrl" alt="@product.Name"/>
-            }
-            else
-            {
-                <span class="text-muted">No image</span>
-            }
-
-            <div class="product-body">
-                <h5 class="card-title">@product.Name</h5>
-                <p>@product.Price.ToString("C")</p>
-
-                @if (product.IsActive)
+        <div class="col mb-5">
+            <div class="card h-100 shadow-sm">
+                @if (!string.IsNullOrEmpty(product.ImageUrl))
                 {
-                    <span class="badge bg-success mb-2">Active</span>
+                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name"/>
                 }
                 else
                 {
-                    <span class="badge bg-secondary mb-2">Inactive</span>
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:200px">
+                        <span class="text-muted">No image</span>
+                    </div>
                 }
 
-                @if (User.Identity != null && User.Identity.IsAuthenticated && product.IsActive)
-                {
-                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                        <input type="hidden" name="productId" value="@product.Id"/>
-                        <input type="hidden" name="productName" value="@product.Name"/>
-                        <input type="hidden" name="price" value="@product.Price"/>
-                        <input type="hidden" name="quantity" value="1"/>
-                        <button type="submit" class="btn btn-primary btn-sm">Add</button>
-                    </form>
-                }
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bolder">@product.Name</h5>
+                    <p class="card-text">@product.Price.ToString("C")</p>
+
+                    @if (product.IsActive)
+                    {
+                        <span class="badge bg-success mb-2">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary mb-2">Inactive</span>
+                    }
+                </div>
+
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent text-center">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && product.IsActive)
+                    {
+                        <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                            <input type="hidden" name="productId" value="@product.Id"/>
+                            <input type="hidden" name="productName" value="@product.Name"/>
+                            <input type="hidden" name="price" value="@product.Price"/>
+                            <input type="hidden" name="quantity" value="1"/>
+                            <button type="submit" class="btn btn-outline-dark mt-auto">Add to cart</button>
+                        </form>
+                    }
+                </div>
             </div>
+
         </div>
     }
 </div>
-</body>
-
-

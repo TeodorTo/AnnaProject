@@ -56,7 +56,7 @@ namespace Web.Controllers
                     CreatedAtUtc = DateTime.UtcNow
                 };
 
-                // Добавяме избраните категории
+           
                 foreach (var catId in model.SelectedCategoryIds)
                 {
                     product.ProductCategories.Add(new ProductCategory

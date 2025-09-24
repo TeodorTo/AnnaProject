@@ -23,6 +23,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddSession();
 
 
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
