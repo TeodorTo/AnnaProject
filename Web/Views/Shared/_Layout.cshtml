@@ -15,32 +15,41 @@
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" asp-controller="Home" asp-action="Index">Web Shop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent">
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-secondary ms-2 d-flex align-items-center gap-1"
+                       asp-controller="Home" asp-action="Index">
+                        <i class="bi-house-door-fill"></i> Home
+                    </a>
+                </li>
                 @if (User.IsInRole("Admin"))
                 {
-                <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Index">Admin</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Admin" asp-action="Index">Admin</a>
+                    </li>
                 }
             </ul>
 
-            <form class="d-flex">
+ 
+            <div class="d-flex align-items-center">
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
-                <a class="btn btn-outline-dark position-relative" asp-controller="Cart" asp-action="Index">
-                    <i class="bi-cart-fill me-1"></i>
-                    Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart-count">
+                    <a class="btn btn-outline-dark position-relative me-3" asp-controller="Cart" asp-action="Index">
+                        <i class="bi-cart-fill me-1"></i>
+                        Cart
+                        <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart-count">
                             @await Component.InvokeAsync("CartCount")
                         </span>
-                </a>
+                    </a>
                 }
-            </form>
 
-            <div class="ms-3">
                 <partial name="_LoginPartial"/>
             </div>
         </div>
