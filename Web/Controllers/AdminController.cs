@@ -74,27 +74,72 @@ namespace Web.Controllers
             ViewData["Categories"] = new MultiSelectList(_context.Categories, "Id", "Name", model.SelectedCategoryIds);
             return View(model);
         }
-
-
+        
         public async Task<IActionResult> EditProduct(Guid id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.ProductCategories) // зареждаме категориите
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null) return NotFound();
-            return View(product);
+
+            var model = new ProductCreateViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                ImageUrl = product.ImageUrl,
+                IsActive = product.IsActive,
+                SelectedCategoryIds = product.ProductCategories.Select(pc => pc.CategoryId).ToList()
+            };
+
+            ViewData["Categories"] = new MultiSelectList(_context.Categories, "Id", "Name", model.SelectedCategoryIds);
+
+            return View(model);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProduct(Product product)
+        public async Task<IActionResult> EditProduct(ProductCreateViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Update(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Products));
+                ViewData["Categories"] = new MultiSelectList(_context.Categories, "Id", "Name", model.SelectedCategoryIds);
+                return View(model);
             }
-            return View(product);
+
+            var product = await _context.Products
+                .Include(p => p.ProductCategories)
+                .FirstOrDefaultAsync(p => p.Id == model.Id);
+
+            if (product == null) return NotFound();
+            
+            product.Name = model.Name;
+            product.Price = model.Price;
+            product.Description = model.Description;
+            product.ImageUrl = model.ImageUrl;
+            product.IsActive = model.IsActive;
+
+            // Update категории
+            product.ProductCategories.Clear();
+            if (model.SelectedCategoryIds != null && model.SelectedCategoryIds.Any())
+            {
+                foreach (var catId in model.SelectedCategoryIds)
+                {
+                    product.ProductCategories.Add(new ProductCategory
+                    {
+                        ProductId = product.Id,
+                        CategoryId = catId
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Products));
         }
+
 
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
